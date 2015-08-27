@@ -1,0 +1,91 @@
+{
+    "push": {
+        "name": "portefaix/ubuntu_14_04"
+    },
+    "variables": {
+        "hostname": "ubuntu",
+        "vm_name": "Ubuntu-14.04-amd64",
+        "disk_size": "2000",
+        "memory_size": "1024",
+        "cpus": "1",
+        "iso_checksum": "9e5fecc94b3925bededed0fdca1bd417",
+        "iso_checksum_type": "md5",
+        "ubuntu_version": "14.04.3",
+        "ubuntu_arch": "amd64",
+        "atlas_username": "{{env `ATLAS_USERNAME`}}",
+        "atlas_name": "ubuntu-14_04",
+        "version": "0.1.0"
+    },
+    "builders": [
+        {
+            "type": "virtualbox-iso",
+            "boot_command" : [
+                "<esc><esc><enter><wait>",
+                "/install/vmlinuz noapic ",
+                "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+                "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
+                "hostname={{ .Name }} ",
+                "fb=false debconf/frontend=noninteractive ",
+                "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
+                "keyboard-configuration/variant=USA console-setup/ask_detect=false ",
+                "initrd=/install/initrd.gz -- <enter>"
+            ],
+            "boot_wait": "10s",
+            "disk_size": "{{ user `disk_size` }}",
+            "guest_os_type": "Ubuntu_64",
+            "http_directory": "http/ubuntu-{{ user `ubuntu_version` }}-{{ user `ubuntu_arch` }}",
+            "iso_checksum": "{{ user `iso_checksum` }}",
+            "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+            "iso_url": "http://releases.ubuntu.com/trusty/ubuntu-{{ user `ubuntu_version` }}-server-/{{ user `ubuntu_arch` }}.iso",
+
+            "ssh_username": "vagrant",
+            "ssh_password": "vagrant",
+            "ssh_port": 22,
+            "ssh_wait_timeout": "10000s",
+            "shutdown_command": "echo '{{user `ssh_pass`}}' | sudo -S shutdown -P now",
+            "virtualbox_version_file": ".vbox_version",
+            "vm_name": "{{ user `vm_name` }}",
+            "vboxmanage": [
+                ["modifyvm", "{{.Name}}", "--memory", "{{ user `memory_size` }}"],
+                ["modifyvm", "{{.Name}}", "--cpus", "{{ user `cpus` }}"]
+            ]
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "execute_command": "echo 'vagrant' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+            "scripts": [
+                // "scripts/ubuntu/base.sh",
+                // "scripts/ubuntu/virtualbox/install-dkms.sh",
+                // "scripts/common/virtualbox/install_vbox_guest_additions.sh",
+                // "scripts/common/virtualbox/sudoers.sh",
+                // "scripts/common/virtualbox/vagrant_ssh.sh",
+                // "scripts/common/sshd.sh",
+                // "scripts/ubuntu/install_docker.sh",
+                // "scripts/common/install_consul.sh",
+                // "scripts/common/install_weave.sh"
+            ]
+        }
+    ],
+    "post-processors": [
+        [
+            {
+                "type": "vagrant",
+                "compression_level": 9
+                "output": "vagrant/ubuntu/ubuntu-{{ user `ubuntu_version` }}-{{.Provider}}.box",
+            },
+            {
+                "type": "atlas",
+                "only": ["virtualbox-iso"],
+                "artifact": "portefaix/ubuntu_14_04",
+                "artifact_type": "vagrant.box",
+                "metadata": {
+                    "created_at": "{{timestamp}}",
+                    "provider": "virtualbox",
+                    "version": "{{user `version`}}"
+                }
+            }
+        ]
+    ]
+}
