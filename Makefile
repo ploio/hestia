@@ -54,7 +54,6 @@ virtualbox:
 .PHONY: push
 push:
 	$(PACKER) push \
-		--name $(ATLAS_USERNAME)/$(template) \
-		-var 'ATLAS_TOKEN=${HESTIA_ATLAS_TOKEN}' \
-		-var 'ATLAS_USERNAME=${HESTIA_ATLAS_USERNAME}' \
+		--name $(HESTIA_ATLAS_USERNAME)/$(template) \
+		-token=${HESTIA_ATLAS_TOKEN} \
 		$(template).json

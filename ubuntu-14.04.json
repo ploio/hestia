@@ -56,15 +56,12 @@
             "type": "shell",
             "execute_command": "echo 'vagrant' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
             "scripts": [
-                // "scripts/ubuntu/base.sh",
-                // "scripts/ubuntu/virtualbox/install-dkms.sh",
-                // "scripts/common/virtualbox/install_vbox_guest_additions.sh",
-                // "scripts/common/virtualbox/sudoers.sh",
-                // "scripts/common/virtualbox/vagrant_ssh.sh",
-                // "scripts/common/sshd.sh",
-                // "scripts/ubuntu/install_docker.sh",
-                // "scripts/common/install_consul.sh",
-                // "scripts/common/install_weave.sh"
+                "scripts/ubuntu-{{ user `ubuntu_version` }}-{{ user `ubuntu_arch` }}/update.sh",
+                "scripts/ubuntu-{{ user `ubuntu_version` }}-{{ user `ubuntu_arch` }}/sudoers.sh",
+                "scripts/ubuntu-{{ user `ubuntu_version` }}-{{ user `ubuntu_arch` }}/vagrant.sh",
+                "scripts/ubuntu-{{ user `ubuntu_version` }}-{{ user `ubuntu_arch` }}/vbguest.sh",
+                "scripts/ubuntu-{{ user `ubuntu_version` }}-{{ user `ubuntu_arch` }}/sshd.sh",
+                "scripts/ubuntu-{{ user `ubuntu_version` }}-{{ user `ubuntu_arch` }}/cleanup.sh",
             ]
         }
     ],
