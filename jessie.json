@@ -11,7 +11,7 @@
         "atlas_token": "{{env `HESTIA_ATLAS_TOKEN`}}",
         "atlas_username": "{{env `HESTIA_ATLAS_USERNAME`}}",
         "atlas_name": "jessie",
-        "version": "0.2.0"
+        "version": "0.3.0"
     },
     "builders": [
         {
